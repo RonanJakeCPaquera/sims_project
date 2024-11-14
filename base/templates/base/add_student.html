@@ -1,0 +1,144 @@
+{% extends 'base/main.html' %}
+{% block content %}
+
+<div class="container-fluid p-0">
+    <!-- Header -->
+    <div class="header-section d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <img src="https://www.cit.edu/wp-content/uploads/2020/05/CIT-U-Logo-2020.png" alt="CIT Logo" style="width: 50px;">
+            <div class="ms-3 text-white">
+                <div class="university-title">
+                    <h5 class="mb-0">CEBU INSTITUTE OF TECHNOLOGY UNIVERSITY</h5>
+                    <div class="system-subtitle">Student Information System</div>
+                </div>
+                <small class="dashboard-label">Add New Student</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center">
+            <a href="{% url 'base:faculty_dashboard' %}" class="btn btn-outline-light me-2">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Add Student Form -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header" style="background-color: #F5DEB3;">
+                <h5 class="mb-0" style="color: #8B0000;">Add New Student</h5>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                <div class="messages mb-4">
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <!-- Personal Information -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label style="color: #8B0000;">First Name</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="color: #8B0000;">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label style="color: #8B0000;">Student ID</label>
+                            <input type="text" name="student_id" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="color: #8B0000;">Course</label>
+                            <select name="course" class="form-control" required>
+                                <option value="">Select Course</option>
+                                <option value="BS in Computer Science">BS in Computer Science</option>
+                                <option value="BS in Information Technology">BS in Information Technology</option>
+                                <option value="BS in Computer Engineering">BS in Computer Engineering</option>
+                                <!-- Add more courses as needed -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label style="color: #8B0000;">Year Level</label>
+                            <select name="year_level" class="form-control" required>
+                                <option value="">Select Year Level</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label style="color: #8B0000;">Birthdate</label>
+                            <input type="date" name="birthdate" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label style="color: #8B0000;">Contact Number</label>
+                            <input type="tel" name="contact_number" class="form-control" pattern="[0-9]{11}" placeholder="09XXXXXXXXX" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label style="color: #8B0000;">Address</label>
+                        <textarea name="address" class="form-control" rows="2" required></textarea>
+                    </div>
+
+                    <!-- Account Information -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label style="color: #8B0000;">Username</label>
+                            <input type="text" name="username" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label style="color: #8B0000;">Password</label>
+                            <input type="password" name="password1" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label style="color: #8B0000;">Confirm Password</label>
+                            <input type="password" name="password2" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn" style="background-color: #8B0000; color: white;">
+                            <i class="fas fa-plus-circle me-2"></i>Add Student
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .header-section {
+        background-color: #8B0000;
+        padding: 1rem 2rem;
+        color: white;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0 20px rgba(139, 0, 0, 0.1);
+    }
+
+    .form-control:focus {
+        border-color: #8B0000;
+        box-shadow: 0 0 0 0.2rem rgba(139, 0, 0, 0.25);
+    }
+</style>
+
+{% endblock %} 

@@ -1,0 +1,242 @@
+{% extends 'base/main.html' %}
+{% block content %}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: #F5DEB3;
+    }
+
+    .header-section {
+        margin: 0;
+        padding: 1rem 2rem;
+        background-color: #8B0000;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-container {
+        padding: 2rem;
+        background-color: #F5DEB3;
+    }
+
+    .info-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        background-color: white;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stats-card {
+        height: 100%;
+    }
+
+    .stats-card h3 {
+        color: #8B0000;
+        font-size: 2rem;
+        margin: 10px 0;
+    }
+
+    .table thead th {
+        background-color: #F5DEB3;
+        color: #8B0000;
+        border-bottom: 2px solid #8B0000;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(245, 222, 179, 0.1);
+    }
+
+    .university-title h5 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+    }
+
+    .system-subtitle {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #F5DEB3;
+        letter-spacing: 0.3px;
+        margin-bottom: 2px;
+    }
+
+    .dashboard-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-style: italic;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-container {
+        animation: fadeIn 0.5s ease-out;
+    }
+</style>
+
+<!-- Header -->
+<div class="header-section d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <img src="https://www.cit.edu/wp-content/uploads/2020/05/CIT-U-Logo-2020.png" alt="CIT Logo" style="width: 50px;">
+        <div class="ms-3 text-white">
+            <div class="university-title">
+                <h5 class="mb-0">CEBU INSTITUTE OF TECHNOLOGY UNIVERSITY</h5>
+                <div class="system-subtitle">Student Information System</div>
+            </div>
+            <small class="dashboard-label">Student Dashboard</small>
+        </div>
+    </div>
+    <div class="d-flex align-items-center">
+        <span class="text-white me-3">Welcome, {{ student.user.get_full_name }}</span>
+        <a href="{% url 'base:logout' %}" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-2"></i>Logout
+        </a>
+    </div>
+</div>
+
+<!-- Dashboard Content -->
+<div class="dashboard-container">
+    {% if messages %}
+    <div class="notification-container">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show notification-alert" role="alert">
+            <div class="d-flex align-items-center">
+                {% if message.tags == 'success' %}
+                    <i class="fas fa-check-circle me-2"></i>
+                {% elif message.tags == 'error' %}
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                {% endif %}
+                <strong>{{ message }}</strong>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Student Information -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card info-card">
+                <div class="card-header" style="background-color: #F5DEB3;">
+                    <h5 class="mb-0" style="color: #8B0000;">Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Student ID:</strong> {{ student.student_id }}</p>
+                    <p><strong>Name:</strong> {{ student.user.get_full_name }}</p>
+                    <p><strong>Course:</strong> {{ student.course }}</p>
+                    <p><strong>Year Level:</strong> {{ student.get_year_level_display }}</p>
+                    <p><strong>Contact:</strong> {{ student.contact_number }}</p>
+                    <p><strong>Address:</strong> {{ student.address }}</p>
+                    <button class="btn btn-sm" style="background-color: #8B0000; color: white;" 
+                            data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card info-card">
+                <div class="card-header" style="background-color: #F5DEB3;">
+                    <h5 class="mb-0" style="color: #8B0000;">Academic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-book fa-2x mb-2" style="color: #8B0000;"></i>
+                                <h4>Current Units</h4>
+                                <h3>21</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-graduation-cap fa-2x mb-2" style="color: #8B0000;"></i>
+                                <h4>GPA</h4>
+                                <h3>3.5</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrolled Courses -->
+    <div class="card info-card">
+        <div class="card-header" style="background-color: #F5DEB3;">
+            <h5 class="mb-0" style="color: #8B0000;">Enrolled Courses</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Units</th>
+                            <th>Schedule</th>
+                            <th>Instructor</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CS101</td>
+                            <td>Introduction to Programming</td>
+                            <td>3</td>
+                            <td>MWF 9:00-10:30</td>
+                            <td>Dr. Smith</td>
+                            <td>A</td>
+                        </tr>
+                        <!-- Add more courses as needed -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'base:update_profile' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label style="color: #8B0000;">Contact Number</label>
+                        <input type="tel" name="contact_number" class="form-control" 
+                               value="{{ student.contact_number }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label style="color: #8B0000;">Address</label>
+                        <textarea name="address" class="form-control" rows="3" required>{{ student.address }}</textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn" style="background-color: #8B0000; color: white;">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 
