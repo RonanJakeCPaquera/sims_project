@@ -35,3 +35,15 @@ class FacultyProfile(models.Model):
     class Meta:
         verbose_name_plural = "Faculty Profiles"
 
+class Course(models.Model):
+    code = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    units = models.PositiveIntegerField()
+    semester = models.CharField(max_length=50)
+    academic_year = models.CharField(max_length=50)
+    department = models.CharField(max_length=100, blank=True, null=True)
+    course_type = models.CharField(max_length=50, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.code} - {self.name}"

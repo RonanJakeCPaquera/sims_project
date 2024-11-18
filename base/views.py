@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from .forms import StudentRegistrationForm, StudentProfileForm, FacultyRegistrationForm
-from .models import StudentProfile, FacultyProfile
+from .models import StudentProfile, FacultyProfile, Course
 
 def home(request):
     return render(request, 'base/home.html')
@@ -109,11 +109,15 @@ def faculty_dashboard(request):
     try:
         faculty_profile = request.user.faculty_profile
         students = StudentProfile.objects.all().order_by('student_id')
+        courses = Course.objects.all()
         context = {
             'faculty_profile': faculty_profile,
             'students': students,
             'faculty_name': request.user.get_full_name(),
-            'department': faculty_profile.department
+            'department': faculty_profile.department,
+            'total_students': students.count(),
+            'total_courses': courses.count(),
+            'courses': courses
         }
         return render(request, 'base/faculty_dashboard.html', context)
     except FacultyProfile.DoesNotExist:
@@ -274,3 +278,59 @@ def update_student_profile(request):
     except StudentProfile.DoesNotExist:
         messages.error(request, 'Student profile not found.')
         return redirect('base:login')
+    
+def display_courses(request):
+    courses = Course.objects.all()
+    return render(request, 'base/add_course.html', {'courses': courses})
+
+@staff_member_required(login_url='base:login')
+def create_course(request):
+    if request.method == 'POST':
+        code = request.POST['code']
+        name = request.POST['name']
+        units = request.POST['units']
+        semester = request.POST['semester']
+        academic_year = request.POST['academic_year']
+        
+        # Add department and course type fields
+        department = request.POST.get('department', '')
+        course_type = request.POST.get('course_type', '')
+        description = request.POST.get('description', '')
+        
+        # Create the course
+        course = Course.objects.create(
+            code=code, 
+            name=name, 
+            units=units, 
+            semester=semester, 
+            academic_year=academic_year,
+            department=department,
+            course_type=course_type,
+            description=description
+        )
+        
+        messages.success(request, f'Course {code} - {name} added successfully!')
+        return redirect('base:faculty_dashboard')
+    
+    return render(request, 'base/add_course.html', {'create': True})
+
+def update_course(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    if request.method == 'POST':
+        course.code = request.POST['code']
+        course.name = request.POST['name']
+        course.units = request.POST['units']
+        course.semester = request.POST['semester']
+        course.academic_year = request.POST['academic_year']
+        course.save()
+        return redirect('display_courses')
+    return render(request, 'base/add_course.html', {'course': course, 'update': True})
+
+def delete_course(request, pk):
+    if request.method == 'POST':
+        course = get_object_or_404(Course, pk=pk)
+        course.delete()
+        return redirect('display_courses')
+    else:
+        course = get_object_or_404(Course, pk=pk)
+        return render(request, 'base/add_course.html', {'course': course, 'delete': True})
