@@ -283,6 +283,7 @@ def display_courses(request):
     courses = Course.objects.all()
     return render(request, 'base/add_course.html', {'courses': courses})
 
+# views.py
 @staff_member_required(login_url='base:login')
 def create_course(request):
     if request.method == 'POST':
@@ -291,12 +292,11 @@ def create_course(request):
         units = request.POST['units']
         semester = request.POST['semester']
         academic_year = request.POST['academic_year']
-        
-        # Add department and course type fields
         department = request.POST.get('department', '')
         course_type = request.POST.get('course_type', '')
         description = request.POST.get('description', '')
-        
+        instructor_name = request.POST.get('instructor_name', '')  # New field
+
         # Create the course
         course = Course.objects.create(
             code=code, 
@@ -306,14 +306,16 @@ def create_course(request):
             academic_year=academic_year,
             department=department,
             course_type=course_type,
-            description=description
+            description=description,
+            instructor_name=instructor_name  # New field
         )
         
         messages.success(request, f'Course {code} - {name} added successfully!')
         return redirect('base:faculty_dashboard')
     
-    return render(request, 'base/add_course.html', {'create': True})
+    return render(request, 'base/add_course.html', {'course': {}, 'create': True})
 
+@staff_member_required(login_url='base:login')
 def update_course(request, pk):
     course = get_object_or_404(Course, pk=pk)
     if request.method == 'POST':
@@ -322,8 +324,14 @@ def update_course(request, pk):
         course.units = request.POST['units']
         course.semester = request.POST['semester']
         course.academic_year = request.POST['academic_year']
+        course.department = request.POST.get('department', '')
+        course.course_type = request.POST.get('course_type', '')
+        course.description = request.POST.get('description', '')
+        course.instructor_name = request.POST.get('instructor_name', '')  # New field
         course.save()
-        return redirect('display_courses')
+        messages.success(request, f'Course {course.code} - {course.name} updated successfully!')
+        return redirect('base:faculty_dashboard')
+    
     return render(request, 'base/add_course.html', {'course': course, 'update': True})
 
 def delete_course(request, pk):

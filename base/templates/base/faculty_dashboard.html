@@ -247,42 +247,44 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Course Code</th>
-                            <th>Course Name</th>
-                            <th>Units</th>
-                            <th>Semester</th>
-                            <th>Academic Year</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if courses %}
-                            {% for course in courses %}
-                            <tr>
-                                <td>{{ course.code }}</td>
-                                <td>{{ course.name }}</td>
-                                <td>{{ course.units }}</td>
-                                <td>{{ course.semester }}</td>
-                                <td>{{ course.academic_year }}</td>
-                                <td>
-                                    <a href="{% url 'base:update_course' course.pk %}" class="btn btn-sm action-btn edit-btn" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <button class="btn btn-sm action-btn delete-btn" title="Delete" 
-                                            data-bs-toggle="modal" data-bs-target="#deleteModal{{ course.pk }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="6" class="text-center">No courses found.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
+<thead>
+    <tr>
+        <th>Course Code</th>
+        <th>Course Name</th>
+        <th>Units</th>
+        <th>Semester</th>
+        <th>Academic Year</th>
+        <th>Instructor Name</th> <!-- New column -->
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% if courses %}
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.code }}</td>
+            <td>{{ course.name }}</td>
+            <td>{{ course.units }}</td>
+            <td>{{ course.semester }}</td>
+            <td>{{ course.academic_year }}</td>
+            <td>{{ course.instructor_name }}</td> <!-- New field -->
+            <td>
+                <a href="{% url 'base:update_course' course.pk %}" class="btn btn-sm action-btn edit-btn" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <button class="btn btn-sm action-btn delete-btn" title="Delete" 
+                        data-bs-toggle="modal" data-bs-target="#deleteModal{{ course.pk }}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="7" class="text-center">No courses found.</td>
+        </tr>
+    {% endif %}
+</tbody>
                 </table>
             </div>
         </div>
