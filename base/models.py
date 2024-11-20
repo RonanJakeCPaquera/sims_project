@@ -20,23 +20,17 @@ class StudentProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.get_full_name()} - {self.student_id}"
+        return self.user.username
 
 class FacultyProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='faculty_profile')
     department = models.CharField(max_length=100)
-    contact_number = models.CharField(max_length=15)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.get_full_name()} - {self.department}"
-
-    class Meta:
-        verbose_name_plural = "Faculty Profiles"
+        return self.user.username
 
 class Course(models.Model):
-    code = models.CharField(max_length=50)
+    code = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=100)
     units = models.PositiveIntegerField()
     semester = models.CharField(max_length=50)
@@ -48,3 +42,20 @@ class Course(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.name}"
+
+class Enrollment(models.Model):
+    enrollment_id = models.AutoField(primary_key=True)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.student.username} enrolled in {self.course.code} - {self.course.name}"
+    
+class Grade(models.Model):
+    enrollment = models.OneToOneField(Enrollment, on_delete=models.CASCADE)
+    midterm_grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    finals_grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    overall_grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return f"Grades for {self.enrollment.student.username} in {self.enrollment.course.code}"

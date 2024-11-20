@@ -1,0 +1,250 @@
+{% extends 'base/main.html' %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #e2a027;
+        --secondary-color: #ECF0F1;
+        --accent-color: #3498DB;
+        --success-color: #2ECC71;
+        --text-dark: #2C3E50;
+        --text-light: #ECF0F1;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .header-section {
+        background: linear-gradient(120deg, var(--primary-color), #8c1e1e);
+        padding: 1.5rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+    }
+
+    .university-title h5 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .system-subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .dashboard-label {
+        color: var(--secondary-color);
+        opacity: 0.8;
+    }
+
+    .enrollment-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .enrollment-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    .enrollment-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+        background: var(--primary-color);
+        color: var(--text-light);
+        padding: 1.5rem;
+        border-bottom: none;
+    }
+
+    .card-header h5 {
+        font-size: 1.25rem;
+        margin: 0;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-label {
+        color: var(--text-dark);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: var(--transition);
+        color: var(--text-dark);
+    }
+
+    .form-select:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .form-select option {
+        padding: 0.5rem;
+    }
+
+    .submit-btn {
+        background:#e2a027;
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: var(--transition);
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+        background: maroon;
+        transform: translateY(-2px);
+    }
+
+    .back-button {
+        background-color: transparent;
+        border: 2px solid var(--secondary-color);
+        color: var(--secondary-color);
+        transition: var(--transition);
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+    }
+
+    .back-button:hover {
+        background-color: var(--secondary-color);
+        color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+
+    .select-wrapper {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .select-wrapper::after {
+        content: '\f107';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: var(--text-dark);
+    }
+
+    @keyframes fadeIn {
+        from { 
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Notification Styles */
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        max-width: 400px;
+    }
+
+    .notification-alert {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .success {
+        border-left: 4px solid var(--success-color);
+    }
+
+    .error {
+        border-left: 4px solid var(--danger-color);
+    }
+</style>
+
+<div class="container-fluid p-0 animate-in">
+    <!-- Header -->
+    <div class="header-section d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <img src="/static/cittrans.png" alt="CIT Logo" style="width: 80px; margin-right: 1.5rem;">
+            <div>
+                <div class="university-title">
+                    <h5>CEBU INSTITUTE OF TECHNOLOGY UNIVERSITY</h5>
+                </div>
+                <div class="system-subtitle">Student Information System</div>
+                <div class="dashboard-label">Enrollment Management</div>
+            </div>
+        </div>
+        <a href="{% url 'base:faculty_dashboard' %}" class="back-button">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Enrollment Form -->
+    <div class="enrollment-container">
+        <div class="enrollment-card animate-in">
+            <div class="card-header">
+                <h5><i class="fas fa-user-plus me-2"></i>Student Enrollment</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="select-wrapper">
+                        <label for="student_id" class="form-label">Select Student</label>
+                        <select name="student_id" id="student_id" class="form-select">
+                            {% for student in students %}
+                            <option value="{{ student.id }}">{{ student.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="select-wrapper">
+                        <label for="course_id" class="form-label">Select Course</label>
+                        <select name="course_id" id="course_id" class="form-select">
+                            {% for course in courses %}
+                            <option value="{{ course.id }}">{{ course.code }} - {{ course.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check me-2"></i>Confirm Enrollment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
