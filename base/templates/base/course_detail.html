@@ -252,6 +252,14 @@
                                         </button>
                                     </form>
                                 {% endif %}
+					
+					                <form method="POST" action="{% url 'base:delete_enrollment' enrollment.enrollment_id %}" class="d-inline">
+                                            {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1">
+                                                    <i class="fas fa-user-minus"></i>
+                                                </button>
+                                    </form>
+                                    
                             </td>
                         </tr>
                         {% endfor %}

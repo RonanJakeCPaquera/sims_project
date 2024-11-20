@@ -53,9 +53,9 @@ class Enrollment(models.Model):
     
 class Grade(models.Model):
     enrollment = models.OneToOneField(Enrollment, on_delete=models.CASCADE)
-    midterm_grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    finals_grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    overall_grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    midterm_grade = models.IntegerField(null=True, blank=True)
+    finals_grade = models.IntegerField(null=True, blank=True)
+    overall_grade = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"Grades for {self.enrollment.student.username} in {self.enrollment.course.code}"

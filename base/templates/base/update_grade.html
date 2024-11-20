@@ -6,15 +6,15 @@
         {% csrf_token %}
         <div class="form-group">
             <label for="midterm_grade">Midterm Grade:</label>
-            <input type="number" step="0.01" class="form-control" id="midterm_grade" name="midterm_grade" value="{{ grade.midterm_grade }}">
+            <input type="number" step="any" class="form-control" id="midterm_grade" name="midterm_grade" value="{{ grade.midterm_grade }}">
         </div>
         <div class="form-group">
             <label for="finals_grade">Finals Grade:</label>
-            <input type="number" step="0.01" class="form-control" id="finals_grade" name="finals_grade" value="{{ grade.finals_grade }}">
+            <input type="number" step="any" class="form-control" id="finals_grade" name="finals_grade" value="{{ grade.finals_grade }}">
         </div>
         <div class="form-group">
             <label for="overall_grade">Overall Grade:</label>
-            <input type="number" step="0.01" class="form-control" id="overall_grade" name="overall_grade" value="{{ grade.overall_grade }}">
+            <input type="number" step="any" class="form-control" id="overall_grade" name="overall_grade" value="{{ grade.overall_grade }}">
         </div>
         <button type="submit" class="btn btn-primary">Update Grade</button>
     </form>

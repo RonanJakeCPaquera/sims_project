@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from .forms import StudentRegistrationForm, StudentProfileForm, FacultyRegistrationForm
-from .models import Enrollment, StudentProfile, FacultyProfile, Course
+from .models import Enrollment, Grade, StudentProfile, FacultyProfile, Course
 
 def home(request):
     return render(request, 'base/home.html')
@@ -367,22 +367,18 @@ def admin_home(request):
     return render(request, 'base/admin_home.html')
 
 #grades
-from .models import Grade
-
 @staff_member_required(login_url='base:login')
 def add_grade(request, enrollment_id):
     enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id)
     if request.method == 'POST':
-        midterm_grade = request.POST.get('midterm_grade') or None
-        finals_grade = request.POST.get('finals_grade') or None
-        overall_grade = request.POST.get('overall_grade') or None
+        midterm_grade = request.POST.get('midterm_grade')
+        finals_grade = request.POST.get('finals_grade')
+        overall_grade = request.POST.get('overall_grade')
         
-        if midterm_grade:
-            midterm_grade = float(midterm_grade)
-        if finals_grade:
-            finals_grade = float(finals_grade)
-        if overall_grade:
-            overall_grade = float(overall_grade)
+        # Convert to float if not empty
+        midterm_grade = float(midterm_grade) if midterm_grade else None
+        finals_grade = float(finals_grade) if finals_grade else None
+        overall_grade = float(overall_grade) if overall_grade else None
         
         # Check if a grade already exists for this enrollment
         if Grade.objects.filter(enrollment=enrollment).exists():
@@ -403,9 +399,15 @@ def add_grade(request, enrollment_id):
 def update_grade(request, grade_id):
     grade = get_object_or_404(Grade, id=grade_id)
     if request.method == 'POST':
-        grade.midterm_grade = request.POST.get('midterm_grade')
-        grade.finals_grade = request.POST.get('finals_grade')
-        grade.overall_grade = request.POST.get('overall_grade')
+        midterm_grade = request.POST.get('midterm_grade')
+        finals_grade = request.POST.get('finals_grade')
+        overall_grade = request.POST.get('overall_grade')
+        
+        # Convert to float if not empty
+        grade.midterm_grade = float(midterm_grade) if midterm_grade else None
+        grade.finals_grade = float(finals_grade) if finals_grade else None
+        grade.overall_grade = float(overall_grade) if overall_grade else None
+        
         grade.save()
         messages.success(request, 'Grade updated successfully!')
         return redirect('base:course_detail', course_id=grade.enrollment.course.id)
