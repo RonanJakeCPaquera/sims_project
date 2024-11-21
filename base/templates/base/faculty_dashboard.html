@@ -395,36 +395,6 @@
             </div>
             {% endif %}
 
-            <!-- Filter Section -->
-            <div class="mb-4">
-                <form action="{% url 'base:filter_students' %}" method="GET" class="row g-3">
-                    <div class="col-md-4">
-                        <select name="course" class="form-select">
-                            <option value="">All Courses</option>
-                            {% for course in courses %}
-                            <option value="{{ course }}" {% if selected_course == course %}selected{% endif %}>
-                                {{ course }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <select name="year_level" class="form-select">
-                            <option value="">All Year Levels</option>
-                            {% for year in year_levels %}
-                            <option value="{{ year.0 }}" {% if selected_year == year.0 %}selected{% endif %}>
-                                {{ year.1 }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-warning">Filter</button>
-                        <a href="{% url 'base:faculty_dashboard' %}" class="btn btn-outline-secondary">Reset</a>
-                    </div>
-                </form>
-            </div>
-
             <!-- Students Table -->
             <div class="table-responsive">
                 <table class="table table-hover">
