@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from .forms import StudentRegistrationForm, StudentProfileForm, FacultyRegistrationForm
-from .models import StudentProfile, FacultyProfile, Course
+from .models import Enrollment, Grade, StudentProfile, FacultyProfile, Course
 
 def home(request):
     return render(request, 'base/home.html')
@@ -71,15 +71,19 @@ def logout_view(request):
     return redirect('base:login')
 
 @login_required
-def student_dashboard(request):  # Renamed from student_profile
-    if request.user.is_staff:  # Prevent faculty from accessing student dashboard
+def student_dashboard(request):
+    if request.user.is_staff:
         return redirect('base:faculty_dashboard')
         
     try:
         student = request.user.student_profile
+        enrollments = Enrollment.objects.filter(student=request.user).select_related('grade', 'course')
+        total_units = sum(enrollment.course.units for enrollment in enrollments)
         context = {
             'student': student,
-            'student_name': request.user.get_full_name()
+            'student_name': request.user.get_full_name(),
+            'enrollments': enrollments,
+            'total_units': total_units
         }
         return render(request, 'base/student_dashboard.html', context)
     except StudentProfile.DoesNotExist:
@@ -110,6 +114,10 @@ def faculty_dashboard(request):
         faculty_profile = request.user.faculty_profile
         students = StudentProfile.objects.all().order_by('student_id')
         courses = Course.objects.all()
+
+        selected_course_id = request.GET.get('course')
+        enrollments = Enrollment.objects.filter(course_id=selected_course_id) if selected_course_id else Enrollment.objects.all()
+        
         context = {
             'faculty_profile': faculty_profile,
             'students': students,
@@ -117,7 +125,10 @@ def faculty_dashboard(request):
             'department': faculty_profile.department,
             'total_students': students.count(),
             'total_courses': courses.count(),
-            'courses': courses
+            'courses': courses,
+
+            'enrollments': enrollments,
+            'selected_course_id': selected_course_id
         }
         return render(request, 'base/faculty_dashboard.html', context)
     except FacultyProfile.DoesNotExist:
@@ -322,15 +333,118 @@ def update_course(request, pk):
         course.units = request.POST['units']
         course.semester = request.POST['semester']
         course.academic_year = request.POST['academic_year']
+        course.department = request.POST.get('department', '')
+        course.course_type = request.POST.get('course_type', '')
+        course.description = request.POST.get('description', '')
         course.save()
-        return redirect('display_courses')
+        return redirect('base:faculty_dashboard')
     return render(request, 'base/add_course.html', {'course': course, 'update': True})
 
 def delete_course(request, pk):
     if request.method == 'POST':
         course = get_object_or_404(Course, pk=pk)
         course.delete()
-        return redirect('display_courses')
+        return redirect('base:faculty_dashboard')
     else:
         course = get_object_or_404(Course, pk=pk)
         return render(request, 'base/add_course.html', {'course': course, 'delete': True})
+    
+##################################COURSE DETAILS##########mao nisud sa enrolled########################
+@staff_member_required(login_url='base:login')
+def course_detail(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    enrollments = Enrollment.objects.filter(course=course).select_related('grade', 'student')
+    context = {
+        'course': course,
+        'enrollments': enrollments
+    }
+    return render(request, 'base/course_detail.html', context)
+
+#################################ENROLLMENT##################################
+@staff_member_required(login_url='base:login')
+def enroll_student(request, course_id=None):
+    if request.method == 'POST':
+        student_id = request.POST['student_id']
+        course_id = request.POST.get('course_id', course_id)
+        student = get_object_or_404(User, id=student_id)
+        course = get_object_or_404(Course, id=course_id)
+        
+        Enrollment.objects.create(student=student, course=course)
+        
+        messages.success(request, f'Student {student.username} enrolled in {course.code} - {course.name} successfully!')
+        return redirect('base:course_detail', course_id=course.id)
+    
+    students = User.objects.filter(is_staff=False)
+    courses = Course.objects.all()
+    context = {
+        'students': students,
+        'courses': courses,
+        'selected_course_id': course_id
+    }
+    return render(request, 'base/enroll_student.html', context)
+
+@staff_member_required(login_url='base:login')
+def delete_enrollment(request, enrollment_id):
+    enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id)
+    enrollment.delete()
+    messages.success(request, 'Enrollment deleted successfully!')
+    return redirect('base:faculty_dashboard')
+
+def admin_home(request):
+    # Your logic for the admin home view
+    return render(request, 'base/admin_home.html')
+
+##############################################GRADES##########################################
+@staff_member_required(login_url='base:login')
+def add_grade(request, enrollment_id):
+    enrollment = get_object_or_404(Enrollment, enrollment_id=enrollment_id)
+    if request.method == 'POST':
+        midterm_grade = request.POST.get('midterm_grade')
+        finals_grade = request.POST.get('finals_grade')
+        overall_grade = request.POST.get('overall_grade')
+        
+        # Convert to float if not empty
+        midterm_grade = float(midterm_grade) if midterm_grade else None
+        finals_grade = float(finals_grade) if finals_grade else None
+        overall_grade = float(overall_grade) if overall_grade else None
+        
+        # Check if a grade already exists for this enrollment
+        if Grade.objects.filter(enrollment=enrollment).exists():
+            messages.error(request, 'Grade already exists for this enrollment.')
+        else:
+            Grade.objects.create(
+                enrollment=enrollment,
+                midterm_grade=midterm_grade,
+                finals_grade=finals_grade,
+                overall_grade=overall_grade
+            )
+            messages.success(request, 'Grade added successfully!')
+        
+        return redirect('base:course_detail', course_id=enrollment.course.id)
+    return render(request, 'base/add_grade.html', {'enrollment': enrollment})
+
+@staff_member_required(login_url='base:login')
+def update_grade(request, grade_id):
+    grade = get_object_or_404(Grade, id=grade_id)
+    if request.method == 'POST':
+        midterm_grade = request.POST.get('midterm_grade')
+        finals_grade = request.POST.get('finals_grade')
+        overall_grade = request.POST.get('overall_grade')
+        
+        # Convert to float if not empty
+        grade.midterm_grade = float(midterm_grade) if midterm_grade else None
+        grade.finals_grade = float(finals_grade) if finals_grade else None
+        grade.overall_grade = float(overall_grade) if overall_grade else None
+        
+        grade.save()
+        messages.success(request, 'Grade updated successfully!')
+        return redirect('base:course_detail', course_id=grade.enrollment.course.id)
+    return render(request, 'base/update_grade.html', {'grade': grade})
+
+@staff_member_required(login_url='base:login')
+def delete_grade(request, grade_id):
+    grade = get_object_or_404(Grade, id=grade_id)
+    course_id = grade.enrollment.course.id
+    grade.delete()
+    messages.success(request, 'Grade deleted successfully!')
+    return redirect('base:course_detail', course_id=course_id)
