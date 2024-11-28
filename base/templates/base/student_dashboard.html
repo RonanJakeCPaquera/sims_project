@@ -157,7 +157,7 @@
                             <div class="text-center">
                                 <i class="fas fa-book fa-2x mb-2" style="color: #8B0000;"></i>
                                 <h4>Current Units</h4>
-                                <h3>21</h3>
+                                <h3>{{ total_units }}</h3>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -173,10 +173,10 @@
         </div>
     </div>
 
-    <!-- Enrolled Courses -->
+    <!-- Enrolled Courses and Grades -->
     <div class="card info-card">
         <div class="card-header" style="background-color: #F5DEB3;">
-            <h5 class="mb-0" style="color: #8B0000;">Enrolled Courses</h5>
+            <h5 class="mb-0" style="color: #8B0000;">Enrolled Courses and Grades</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -186,21 +186,30 @@
                             <th>Course Code</th>
                             <th>Course Name</th>
                             <th>Units</th>
-                            <th>Schedule</th>
-                            <th>Instructor</th>
-                            <th>Grade</th>
+                            <th>Semester</th>
+                            <th>Midterm Grade</th>
+                            <th>Finals Grade</th>
+                            <th>Overall Grade</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>CS101</td>
-                            <td>Introduction to Programming</td>
-                            <td>3</td>
-                            <td>MWF 9:00-10:30</td>
-                            <td>Dr. Smith</td>
-                            <td>A</td>
-                        </tr>
-                        <!-- Add more courses as needed -->
+                        {% if enrollments %}
+                            {% for enrollment in enrollments %}
+                            <tr>
+                                <td>{{ enrollment.course.code }}</td>
+                                <td>{{ enrollment.course.name }}</td>
+                                <td>{{ enrollment.course.units }}</td>
+                            <td>{{ enrollment.course.semester }}</td>
+                                <td>{% if enrollment.grade %}{{ enrollment.grade.midterm_grade }}{% else %}N/A{% endif %}</td>
+                                <td>{% if enrollment.grade %}{{ enrollment.grade.finals_grade }}{% else %}N/A{% endif %}</td>
+                                <td>{% if enrollment.grade %}{{ enrollment.grade.overall_grade }}{% else %}N/A{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No courses enrolled.</td>
+                            </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -239,4 +248,4 @@
     </div>
 </div>
 
-{% endblock %} 
+{% endblock %}

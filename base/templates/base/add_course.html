@@ -12,7 +12,7 @@
                     <h5 class="mb-0">CEBU INSTITUTE OF TECHNOLOGY UNIVERSITY</h5>
                     <div class="system-subtitle">Student Information System</div>
                 </div>
-                <small class="dashboard-label">Add New Course</small>
+                <small class="dashboard-label">{% if update %}Update Course{% else %}Add New Course{% endif %}</small>
             </div>
         </div>
         <div class="d-flex align-items-center">
@@ -22,11 +22,11 @@
         </div>
     </div>
 
-    <!-- Add Course Form -->
+    <!-- Add/Update Course Form -->
     <div class="container mt-4">
         <div class="card">
             <div class="card-header" style="background-color: #F5DEB3;">
-                <h5 class="mb-0" style="color: #8B0000;">Add New Course</h5>
+                <h5 class="mb-0" style="color: #8B0000;">{% if update %}Update Course{% else %}Add New Course{% endif %}</h5>
             </div>
             <div class="card-body">
                 {% if messages %}
@@ -40,37 +40,37 @@
                 </div>
                 {% endif %}
 
-                <form method="POST">
+                <form method="POST" action="{% if update %}{% url 'base:update_course' course.pk %}{% else %}{% url 'base:add_course' %}{% endif %}">
                     {% csrf_token %}
                     <!-- Course Information -->
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label style="color: #8B0000;">Course Code</label>
-                            <input type="text" name="code" class="form-control" required>
+                            <input type="text" name="code" class="form-control" value="{% if update %}{{ course.code }}{% endif %}" required>
                         </div>
                         <div class="col-md-6">
                             <label style="color: #8B0000;">Course Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                            <input type="text" name="name" class="form-control" value="{% if update %}{{ course.name }}{% endif %}" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label style="color: #8B0000;">Units</label>
-                            <input type="number" name="units" class="form-control" required>
+                            <input type="number" name="units" class="form-control" value="{% if update %}{{ course.units }}{% endif %}" required>
                         </div>
                         <div class="col-md-4">
                             <label style="color: #8B0000;">Semester</label>
                             <select name="semester" class="form-control" required>
                                 <option value="">Select Semester</option>
-                                <option value="First">First Semester</option>
-                                <option value="Second">Second Semester</option>
-                                <option value="Summer">Summer</option>
+                                <option value="First" {% if update and course.semester == "First" %}selected{% endif %}>First Semester</option>
+                                <option value="Second" {% if update and course.semester == "Second" %}selected{% endif %}>Second Semester</option>
+                                <option value="Summer" {% if update and course.semester == "Summer" %}selected{% endif %}>Summer</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label style="color: #8B0000;">Academic Year</label>
-                            <input type="text" name="academic_year" class="form-control" placeholder="2023-2024" required>
+                            <input type="text" name="academic_year" class="form-control" placeholder="2023-2024" value="{% if update %}{{ course.academic_year }}{% endif %}" required>
                         </div>
                     </div>
 
@@ -79,9 +79,9 @@
                             <label style="color: #8B0000;">Department</label>
                             <select name="department" class="form-control" required>
                                 <option value="">Select Department</option>
-                                <option value="Computer Studies">Department of Computer Studies</option>
-                                <option value="Engineering">Department of Engineering</option>
-                                <option value="Science">Department of Science</option>
+                                <option value="Computer Studies" {% if update and course.department == "Computer Studies" %}selected{% endif %}>Department of Computer Studies</option>
+                                <option value="Engineering" {% if update and course.department == "Engineering" %}selected{% endif %}>Department of Engineering</option>
+                                <option value="Science" {% if update and course.department == "Science" %}selected{% endif %}>Department of Science</option>
                                 <!-- Add more departments as needed -->
                             </select>
                         </div>
@@ -89,21 +89,21 @@
                             <label style="color: #8B0000;">Course Type</label>
                             <select name="course_type" class="form-control" required>
                                 <option value="">Select Course Type</option>
-                                <option value="Lecture">Lecture</option>
-                                <option value="Laboratory">Laboratory</option>
-                                <option value="Lecture and Laboratory">Lecture and Laboratory</option>
+                                <option value="Lecture" {% if update and course.course_type == "Lecture" %}selected{% endif %}>Lecture</option>
+                                <option value="Laboratory" {% if update and course.course_type == "Laboratory" %}selected{% endif %}>Laboratory</option>
+                                <option value="Lecture and Laboratory" {% if update and course.course_type == "Lecture and Laboratory" %}selected{% endif %}>Lecture and Laboratory</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label style="color: #8B0000;">Course Description</label>
-                        <textarea name="description" class="form-control" rows="3" required></textarea>
+                        <textarea name="description" class="form-control" rows="3" required>{% if update %}{{ course.description }}{% endif %}</textarea>
                     </div>
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn" style="background-color: #8B0000; color: white;">
-                            <i class="fas fa-plus-circle me-2"></i>Add Course
+                            <i class="fas fa-plus-circle me-2"></i>{% if update %}Update{% else %}Add{% endif %} Course
                         </button>
                     </div>
                 </form>
