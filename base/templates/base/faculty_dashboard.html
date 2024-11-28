@@ -404,7 +404,7 @@
             </div>
         </div>
         <div class="card-body">
-            {% if messages %}
+            <!-- {% if messages %}
             <div class="messages mb-4">
                 {% for message in messages %}
                 <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} alert-dismissible fade show">
@@ -413,10 +413,10 @@
                 </div>
                 {% endfor %}
             </div>
-            {% endif %}
+            {% endif %} -->
 
             <!-- Filter Section -->
-            <div class="mb-4">
+             <!--<div class="mb-4">
                 <form action="{% url 'base:filter_students' %}" method="GET" class="row g-3">
                     <div class="col-md-4">
                         <select name="course" class="form-select">
@@ -442,6 +442,7 @@
                         <button type="submit" class="btn btn-warning">Filter</button>
                         <a href="{% url 'base:faculty_dashboard' %}" class="btn btn-outline-secondary">Reset</a>
                     </div>
+                    -->
                 </form>
             </div>
 
@@ -471,10 +472,35 @@
                                     <a href="{% url 'base:edit_student' student.id %}" class="btn btn-sm action-btn edit-btn" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button class="btn btn-sm action-btn delete-btn" title="Delete" 
-                                            data-bs-toggle="modal" data-bs-target="#deleteModal{{ student.id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <a href="#" class="btn btn-sm action-btn delete-btn" title="Delete" 
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ student.id }}">
+                                     <i class="fas fa-trash"></i>
+                                 </a>
+                             
+                                 <!-- Delete Confirmation Modal -->
+                                 <div class="modal fade" id="deleteModal{{ student.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ student.id }}" aria-hidden="true">
+                                     <div class="modal-dialog">
+                                         <div class="modal-content">
+                                             <div class="modal-header">
+                                                 <h5 class="modal-title" id="deleteModalLabel{{ student.id }}">Confirm Delete</h5>
+                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                             </div>
+                                             <div class="modal-body">
+                                                 Are you sure you want to delete the student **{{ student.user.get_full_name }}** (ID: {{ student.student_id }})? This action cannot be undone.
+                                             </div>
+                                             <div class="modal-footer">
+                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                 <!-- Delete Form with Icon as the Submit Button -->
+                                                 <form action="{% url 'base:delete_student' student.id %}" method="POST" style="display:inline;">
+                                                     {% csrf_token %}
+                                                     <button type="submit" class="btn btn-danger">
+                                                         <i class="fas fa-trash"></i> Delete
+                                                     </button>
+                                                 </form>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
                                 </td>
                             </tr>
                             {% endfor %}

@@ -155,7 +155,7 @@ def delete_student(request, student_id):
     student.delete()
     user.delete()
     messages.success(request, 'Student record deleted successfully!')
-    return redirect('base:admin_home')
+    return redirect('base:faculty_dashboard')
 
 @staff_member_required(login_url='base:login')
 def search_students(request):
