@@ -79,11 +79,13 @@ def student_dashboard(request):
         student = request.user.student_profile
         enrollments = Enrollment.objects.filter(student=request.user).select_related('grade', 'course')
         total_units = sum(enrollment.course.units for enrollment in enrollments)
+        total_courses = len(enrollments)
         context = {
             'student': student,
             'student_name': request.user.get_full_name(),
             'enrollments': enrollments,
-            'total_units': total_units
+            'total_units': total_units,
+            'total_courses': total_courses,
         }
         return render(request, 'base/student_dashboard.html', context)
     except StudentProfile.DoesNotExist:
@@ -401,12 +403,10 @@ def add_grade(request, enrollment_id):
     if request.method == 'POST':
         midterm_grade = request.POST.get('midterm_grade')
         finals_grade = request.POST.get('finals_grade')
-        overall_grade = request.POST.get('overall_grade')
         
         # Convert to float if not empty
         midterm_grade = float(midterm_grade) if midterm_grade else None
         finals_grade = float(finals_grade) if finals_grade else None
-        overall_grade = float(overall_grade) if overall_grade else None
         
         # Check if a grade already exists for this enrollment
         if Grade.objects.filter(enrollment=enrollment).exists():
@@ -415,8 +415,7 @@ def add_grade(request, enrollment_id):
             Grade.objects.create(
                 enrollment=enrollment,
                 midterm_grade=midterm_grade,
-                finals_grade=finals_grade,
-                overall_grade=overall_grade
+                finals_grade=finals_grade
             )
             messages.success(request, 'Grade added successfully!')
         
@@ -429,12 +428,10 @@ def update_grade(request, grade_id):
     if request.method == 'POST':
         midterm_grade = request.POST.get('midterm_grade')
         finals_grade = request.POST.get('finals_grade')
-        overall_grade = request.POST.get('overall_grade')
         
         # Convert to float if not empty
         grade.midterm_grade = float(midterm_grade) if midterm_grade else None
         grade.finals_grade = float(finals_grade) if finals_grade else None
-        grade.overall_grade = float(overall_grade) if overall_grade else None
         
         grade.save()
         messages.success(request, 'Grade updated successfully!')

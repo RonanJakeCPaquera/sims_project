@@ -125,12 +125,11 @@
                     <input type="number" step="any" class="form-control" id="finals_grade" name="finals_grade" value="{{ grade.finals_grade }}">
                 </div>
                 <div class="form-group mb-3">
-                    <label for="overall_grade">Overall Grade:</label>
-                    <input type="number" step="any" class="form-control" id="overall_grade" name="overall_grade" value="{{ grade.overall_grade }}">
+                    <label for="remarks">Remarks:</label>
+                    <input type="text" class="form-control" id="remarks" name="remarks" value="{{ grade.remarks }}" readonly>
                 </div>
                 <button type="submit" class="btn btn-primary">Update Grade</button>
             </form>
         </div>
     </div>
-</div>
 {% endblock %}

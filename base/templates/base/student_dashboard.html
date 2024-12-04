@@ -138,6 +138,7 @@
                     <p><strong>Year Level:</strong> {{ student.get_year_level_display }}</p>
                     <p><strong>Contact:</strong> {{ student.contact_number }}</p>
                     <p><strong>Address:</strong> {{ student.address }}</p>
+                    
                     <button class="btn btn-sm" style="background-color: #8B0000; color: white;" 
                             data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         <i class="fas fa-edit me-2"></i>Edit Profile
@@ -163,8 +164,8 @@
                         <div class="col-md-6 mb-3">
                             <div class="text-center">
                                 <i class="fas fa-graduation-cap fa-2x mb-2" style="color: #8B0000;"></i>
-                                <h4>GPA</h4>
-                                <h3>3.5</h3>
+                                <h4>Total Courses</h4>
+                                <h3>{{ total_courses }}</h3>
                             </div>
                         </div>
                     </div>
@@ -189,7 +190,7 @@
                             <th>Semester</th>
                             <th>Midterm Grade</th>
                             <th>Finals Grade</th>
-                            <th>Overall Grade</th>
+                            <th>Remarks</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -202,7 +203,7 @@
                             <td>{{ enrollment.course.semester }}</td>
                                 <td>{% if enrollment.grade %}{{ enrollment.grade.midterm_grade }}{% else %}N/A{% endif %}</td>
                                 <td>{% if enrollment.grade %}{{ enrollment.grade.finals_grade }}{% else %}N/A{% endif %}</td>
-                                <td>{% if enrollment.grade %}{{ enrollment.grade.overall_grade }}{% else %}N/A{% endif %}</td>
+                                <td>{% if enrollment.grade %}{{ enrollment.grade.remarks }}{% else %}N/A{% endif %}</td>
                             </tr>
                             {% endfor %}
                         {% else %}

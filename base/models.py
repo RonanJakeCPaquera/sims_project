@@ -18,8 +18,8 @@ class StudentProfile(models.Model):
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
+    
+def __str__(self):
         return f"{self.user.get_full_name()} - {self.student_id}"
 
 class FacultyProfile(models.Model):
@@ -60,7 +60,16 @@ class Grade(models.Model):
     enrollment = models.OneToOneField(Enrollment, on_delete=models.CASCADE)
     midterm_grade = models.FloatField(null=True, blank=True)
     finals_grade = models.FloatField(null=True, blank=True)
-    overall_grade = models.FloatField(null=True, blank=True)
+    remarks = models.CharField(max_length=10, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.midterm_grade is not None and self.finals_grade is not None:
+            overall_grade = (self.midterm_grade + self.finals_grade) / 2
+            if overall_grade <= 2:
+                self.remarks = 'Failed'
+            else:
+                self.remarks = 'Passed'
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Grades for {self.enrollment.student.username} in {self.enrollment.course.code}"

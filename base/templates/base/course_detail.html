@@ -229,7 +229,7 @@
                         <th>Student Username</th>
                         <th>Midterm Grade</th>
                         <th>Finals Grade</th>
-                        <th>Overall Grade</th>
+                        <th>Remarks</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -242,7 +242,13 @@
                             <td>{{ enrollment.student.username}}</td>
                             <td>{% if enrollment.grade %}{{ enrollment.grade.midterm_grade }}{% else %}N/A{% endif %}</td>
                             <td>{% if enrollment.grade %}{{ enrollment.grade.finals_grade }}{% else %}N/A{% endif %}</td>
-                            <td>{% if enrollment.grade %}{{ enrollment.grade.overall_grade }}{% else %}N/A{% endif %}</td>
+                            <td>
+                                {% if enrollment.grade and enrollment.grade.midterm_grade is not None and enrollment.grade.finals_grade is not None %}
+                                    {{ enrollment.grade.remarks }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
                             <td>
                                 <!-- Add button will only appear if there is no grade -->
                                 {% if not enrollment.grade %}

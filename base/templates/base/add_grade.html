@@ -110,22 +110,18 @@
     <div class="container">
         <div class="form-container animate-in">
             <h2 class="mb-4">Add Grade for {{ enrollment.student.get_full_name }}</h2>
-            <form method="POST">
-                {% csrf_token %}
-                <div class="form-group mb-3">
-                    <label for="midterm_grade">Midterm Grade:</label>
-                    <input type="number" step="any" class="form-control" id="midterm_grade" name="midterm_grade" >
-                </div>
-                <div class="form-group mb-3">
-                    <label for="finals_grade">Finals Grade:</label>
-                    <input type="number" step="any" class="form-control" id="finals_grade" name="finals_grade">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="overall_grade">Overall Grade:</label>
-                    <input type="number" step="any" class="form-control" id="overall_grade" name="overall_grade">
-                </div>
-                <button type="submit" class="btn btn-primary">Add Grade</button>
-            </form>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="midterm_grade">Midterm Grade:</label>
+                        <input type="number" step="any" class="form-control" id="midterm_grade" name="midterm_grade" >
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="finals_grade">Finals Grade:</label>
+                        <input type="number" step="any" class="form-control" id="finals_grade" name="finals_grade">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Grade</button>
+                </form>
         </div>
     </div>
 </div>
