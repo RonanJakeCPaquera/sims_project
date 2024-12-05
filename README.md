@@ -11,7 +11,7 @@ The project is a Django-based web application that provides students with a conv
 
 ## Project Planning & Design
 - [Gantt Chart] - https://docs.google.com/spreadsheets/d/1ZaBtcHO0ex54KguD0OgiAHNTbIgiHrCjtjS7R94AuNQ/edit?gid=0#gid=0
-- [Figma Designs] - https://www.figma.com/design/gJT1wCdAsUD07TcaDODMAb/SIMS-UI%2FUX-(IM2)?node-id=0-1&amp;node-type=canvas&amp;t=4NUkITyEiUTOQkPd-0
+- [Functionalities and ERD] - https://cebuinstituteoftechnology-my.sharepoint.com/:b:/g/personal/kylenina_inion_cit_edu/ETawiBfp7PxCgLLQ6_XL7KkBbWyUwJAWZFRX1GiXxZxQew?e=FsuwSE
 
 ## Tech Stack
 - **Backend Framework:** Django
